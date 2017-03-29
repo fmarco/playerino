@@ -13,6 +13,8 @@ class App extends Component {
     this.goBack = this.goBack.bind(this);
     this.goForward = this.goForward.bind(this);
     this.play = this.play.bind(this);
+    this.stop = this.stop.bind(this);
+    this.running = false;
     this.state = { width: 600, height: 700, frameList: [], index: null };
   }
 
@@ -26,41 +28,46 @@ class App extends Component {
 
   goBack(){
     let index = this.state.index;
-    if(this.state.frameList != null){
-      if(index > 0)
-        this.setState({index: this.state.index - 1});
+    if(this.state.frameList != null && index != null){
+        let new_index = (this.state.index + this.state.frameList.length - 1) % this.state.frameList.length;
+        this.setState({index: new_index});
     }
   }
 
   goForward(){
     let index = this.state.index;
-    if(this.state.frameList != null){
-      if(index < this.state.frameList.length && index >= 0)
-        this.setState({index: this.state.index + 1});
+    if(this.state.frameList != null && index != null){
+        let new_index = (this.state.index + 1) % this.state.frameList.length;
+        this.setState({index: new_index});
     }
   }
 
   play(){
     let self = this;
+    
     if(this.state.frameList != null){
-
-        (function iterate (i) {
+        this.running = true;
+        (function iterate () {
           setTimeout(function () {
             self.goForward();
-            if (--i) {
-              iterate(i);
+            if (self.running) {
+              iterate();
             }
           }, 1000);
-        })(this.state.frameList.length - 1);
+        })();
 
      }
+  }
+
+  stop(){
+    this.running = false;
   }
 
   render() {
     const currentFrame = this.state.frameList[this.state.index];
     return (
       <div className="App">
-        <Editor width={this.state.width} height={this.state.height} play={this.play} addFrame={this.addFrame} currentFrame={currentFrame} goBack={this.goBack} goForward={this.goForward} />
+        <Editor width={this.state.width} height={this.state.height} play={this.play} stop={this.stop} addFrame={this.addFrame} currentFrame={currentFrame} goBack={this.goBack} goForward={this.goForward} />
       </div>
     );
   }

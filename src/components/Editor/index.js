@@ -84,6 +84,7 @@ export default class Editor extends Component {
                 <button onClick={this.props.goBack}>Left</button>
                 <button onClick={this.props.goForward}>Right</button>
                 <button onClick={this.props.play}>Play</button>
+                <button onClick={this.props.stop}>Stop</button>
             </div>
         );
     }
